@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Play, Radar, TrendingUp, ArrowRight } from 'lucide-react'
-import Reveal from './Reveal'
+import Reveal, { SplitHeading } from './Reveal'
 
 const STEPS = [
   { icon: Play, n: '01', title: 'Practise real English', desc: 'Work through listening, speaking, reading and writing activities based on practical contexts.' },
@@ -34,7 +34,7 @@ export default function HowItWorks() {
         <div className="how-head">
           <Reveal>
             <span className="eyebrow light">How Evolish works</span>
-            <h2>Practice. Feedback.<br />Progress. <span className="mint">Repeat.</span></h2>
+            <SplitHeading parts={['Practice. Feedback.\nProgress. ', ['Repeat.', 'mint']]} />
           </Reveal>
           <Reveal delay={0.15}>
             <p>Language improves through consistent use. Evolish turns that simple principle into a guided experience for every learner.</p>

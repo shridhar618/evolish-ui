@@ -7,7 +7,7 @@
     <meta name="description" content="Evolish — AI-powered English learning for individuals, colleges and universities." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
     <title>Evolish — Better English for every ambition</title>
     <meta name="theme-color" content="#4a37b4" />
 
@@ -28,8 +28,8 @@
     <!-- Apply saved / system theme before first paint to avoid a flash -->
     <script>
       try {
-        var t = localStorage.getItem('evolish-theme');
-        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        // Light (white) theme by default; dark only if the visitor chose it before
+        var t = localStorage.getItem('evolish-theme') === 'dark' ? 'dark' : 'light';
         document.documentElement.setAttribute('data-theme', t);
       } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
     </script>

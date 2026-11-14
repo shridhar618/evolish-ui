@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { ArrowUpRight, Mic, Building2, BadgeCheck } from 'lucide-react'
-import Reveal from './Reveal'
+import Reveal, { SplitHeading } from './Reveal'
 
 const CARDS = [
   { icon: Mic, tone: 'p', n: '01', title: 'Speak with confidence', desc: 'Daily speaking drills with instant AI feedback on pronunciation, fluency and structure.', tag: 'Spoken English' },
@@ -22,7 +22,7 @@ function TiltCard({ c, i }) {
       <motion.a
         href="#"
         ref={ref}
-        className={`explore-card tone-${c.tone}`}
+        className={`explore-card grad-border tone-${c.tone}`}
         style={{ rotateX: rx, rotateY: ry }}
         onMouseMove={(e) => {
           const r = ref.current.getBoundingClientRect()
@@ -53,7 +53,7 @@ export default function Explore() {
       <div className="container">
         <Reveal className="section-head">
           <span className="eyebrow">Explore Evolish</span>
-          <h2>English learning for every next step.</h2>
+          <SplitHeading parts={['English learning for ', ['every next step.', 'accent']]} />
           <p>Choose the outcome that matters to you today.</p>
         </Reveal>
         <div className="explore-grid">

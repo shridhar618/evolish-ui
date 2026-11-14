@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { ArrowUp, ArrowUpRight, Download } from 'lucide-react'
-import Reveal from './Reveal'
+import Reveal, { SplitHeading } from './Reveal'
 import Counter from './Counter'
 
 const STEPS = [
@@ -17,7 +17,7 @@ export default function Colleges({ onBook }) {
       <div className="container colleges-inner">
         <div className="colleges-copy">
           <Reveal><span className="eyebrow">For institutions</span></Reveal>
-          <Reveal delay={0.05}><h2>More than a language lab. A communication-readiness system.</h2></Reveal>
+          <SplitHeading parts={['More than a language lab. ', ['A communication-readiness system.', 'accent']]} />
           <Reveal delay={0.1}><p className="lead">Support mixed proficiency levels, extend faculty capacity and connect English development with employability.</p></Reveal>
           <ol className="pilot">
             {STEPS.map(([n, t, d], i) => (

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { ArrowUpRight, Check, Flame, Users } from 'lucide-react'
-import Reveal from './Reveal'
+import Reveal, { SplitHeading } from './Reveal'
 import Counter from './Counter'
 
 const STATS = [
@@ -34,12 +34,12 @@ export default function Paths() {
       <div className="container">
         <Reveal className="section-head">
           <span className="eyebrow">Choose your path</span>
-          <h2>One platform. Two very different reasons to begin.</h2>
+          <SplitHeading parts={['One platform. ', ['Two very different', 'accent'], ' reasons to begin.']} />
           <p>Evolish gives learners the confidence to communicate and institutions the structure to make progress measurable.</p>
         </Reveal>
 
         {/* Individuals */}
-        <Reveal className="path-card">
+        <Reveal clip className="path-card">
           <div className="path-copy">
             <span className="eyebrow">For individual learners</span>
             <h3>Practise privately. Improve visibly. Speak confidently.</h3>
@@ -89,7 +89,7 @@ export default function Paths() {
         </Reveal>
 
         {/* Colleges */}
-        <Reveal className="path-card reverse">
+        <Reveal clip className="path-card reverse">
           <div className="path-visual blue">
             <div className="cohort-card">
               <div className="cohort-head">

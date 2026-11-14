@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUpRight, Plus, Sparkles } from 'lucide-react'
-import Reveal from './Reveal'
+import Reveal, { SplitHeading } from './Reveal'
 import Logo from './Logo'
 import { Magnetic } from './Extras'
 
@@ -19,7 +19,7 @@ export function FAQ({ onBook }) {
       <div className="container faq-inner">
         <Reveal className="faq-side">
           <span className="eyebrow">Common questions</span>
-          <h2>Start with the path that fits you.</h2>
+          <SplitHeading parts={['Start with the path that ', ['fits you.', 'accent']]} />
           <p>Need help deciding? <button className="u-link" onClick={onBook}>Talk to the Evolish team.</button></p>
         </Reveal>
         <div className="faq-list">

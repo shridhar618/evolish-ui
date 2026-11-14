@@ -37,13 +37,25 @@ export default function App() {
   // Smooth inertial scrolling (disabled for reduced-motion users)
   useEffect(() => {
     if (reduced) return
-    const lenis = new Lenis({ duration: 1.15, smoothWheel: true, anchors: { offset: -80 } })
+    // lerp-based easing feels smooth without the 'floaty' lag of long durations
+    const lenis = new Lenis({ lerp: 0.11, smoothWheel: true, wheelMultiplier: 1, anchors: { offset: -80 } })
     let id
     const raf = (t) => { lenis.raf(t); id = requestAnimationFrame(raf) }
     id = requestAnimationFrame(raf)
     window.__lenis = lenis
     return () => { cancelAnimationFrame(id); lenis.destroy() }
   }, [])
+
+  // Pause looping CSS animations in sections that are off-screen (saves GPU, keeps scrolling smooth)
+  useEffect(() => {
+    if (loading) return
+    const obs = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.target.classList.toggle('is-offscreen', !e.isIntersecting)),
+      { rootMargin: '200px 0px' },
+    )
+    document.querySelectorAll('main > section').forEach((s) => obs.observe(s))
+    return () => obs.disconnect()
+  }, [loading])
 
   useEffect(() => {
     if (login || loading) window.__lenis?.stop()

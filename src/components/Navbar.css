@@ -30,7 +30,7 @@
 .nav-links { display: flex; align-items: center; gap: 2px; margin-inline: auto; }
 .nav-link {
   position: relative; padding: 9px 12px; border-radius: 10px;
-  font-size: 15px; font-weight: 500; color: var(--text);
+  font-size: 14.5px; font-weight: 500; color: var(--text);
   display: inline-flex; align-items: center; gap: 4px;
   transition: color .25s, background .25s;
 }
@@ -62,7 +62,7 @@
 .nav-cta { padding: 12px 20px; font-size: 15px; border-radius: 12px; }
 .burger { display: none; padding: 8px; color: var(--ink); }
 
-.scroll-progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; transform-origin: 0 50%; background: linear-gradient(90deg, var(--brand-2), var(--blue), var(--teal)); }
+.scroll-progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; transform-origin: 0 50%; background: linear-gradient(90deg, #6a5af9, #2563eb, #7c3aed, #4fe3c1); }
 
 .mobile-sheet { position: fixed; inset: 0; z-index: 90; background: rgba(15, 18, 34, .45); backdrop-filter: blur(6px); }
 .mobile-panel { position: absolute; right: 0; top: 0; bottom: 0; width: min(380px, 88vw); background: var(--surface); padding: 20px; display: flex; flex-direction: column; gap: 6px; }
@@ -70,8 +70,9 @@
 .mobile-panel > a:not(.btn) { padding: 14px 8px; font-size: 18px; font-weight: 600; color: var(--ink); border-bottom: 1px solid var(--line); }
 .mobile-panel .btn { justify-content: center; margin-top: 10px; }
 
-@media (max-width: 1280px) { .app-pill { display: none; } }
-@media (max-width: 1100px) {
+/* Breakpoints measured for Syne's wider letterforms */
+@media (max-width: 1520px) { .app-pill { display: none; } }
+@media (max-width: 1360px) {
   .nav-links { display: none; }
   .nav-actions { margin-left: auto; }
   .burger { display: inline-flex; }

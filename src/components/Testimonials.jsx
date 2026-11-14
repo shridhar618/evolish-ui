@@ -1,5 +1,5 @@
 import { Quote, Star } from 'lucide-react'
-import Reveal from './Reveal'
+import Reveal, { SplitHeading } from './Reveal'
 
 // Sample content for the UI — replace with real learner stories.
 const ROW1 = [
@@ -19,7 +19,7 @@ const ROW2 = [
 
 function Card({ c: [quote, role, tag, tone] }) {
   return (
-    <figure className="t-card">
+    <figure className="t-card grad-border">
       <Quote size={22} className={`t-q ${tone}`} />
       <blockquote>{quote}</blockquote>
       <figcaption>
@@ -36,7 +36,7 @@ export default function Testimonials() {
       <div className="container">
         <Reveal className="section-head">
           <span className="eyebrow">Learner stories</span>
-          <h2>Confidence you can hear.</h2>
+          <SplitHeading parts={[['Confidence', 'accent'], ' you can hear.']} />
           <p>From first-year students to placement officers, here's what changes when practice becomes a habit.</p>
         </Reveal>
       </div>

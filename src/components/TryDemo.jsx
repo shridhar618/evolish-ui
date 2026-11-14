@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Mic, Square, RotateCcw, Sparkles, Volume2, Wand2, FileText, AlertCircle } from 'lucide-react'
-import Reveal from './Reveal'
+import Reveal, { SplitHeading } from './Reveal'
 import Counter from './Counter'
 import { analyse, SpeechRecognition } from './speechAnalysis'
 
@@ -96,11 +96,11 @@ export default function TryDemo() {
       <div className="container">
         <Reveal className="section-head">
           <span className="eyebrow">Try it now</span>
-          <h2>Hear what your AI coach hears.</h2>
+          <SplitHeading parts={['Hear what your ', ['AI coach', 'accent'], ' hears.']} />
           <p>Pick a prompt, press the mic and answer out loud. You’ll get instant feedback on pace, fillers, grammar and vocabulary.</p>
         </Reveal>
 
-        <Reveal className="demo-shell">
+        <Reveal clip className="demo-shell">
           <div className="demo-left">
             <span className="demo-label">Choose a prompt</span>
             {PROMPTS.map((x, i) => (

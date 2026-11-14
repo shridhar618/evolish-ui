@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
 import { ArrowDown, ArrowUpRight, Check, Home, Mic, TrendingUp, BarChart3, Sparkles } from 'lucide-react'
 import { LogoMark } from './Logo'
 import Counter from './Counter'
@@ -26,9 +26,16 @@ function Waveform() {
 export default function Hero() {
   const [w, setW] = useState(0)
   useEffect(() => {
-    const t = setInterval(() => setW((v) => (v + 1) % WORDS.length), 2600)
+    const t = setInterval(() => setW((v) => (v + 1) % WORDS.length), 3000)
     return () => clearInterval(t)
   }, [])
+
+  // Gentle scroll parallax: visual drifts up slower, copy fades as you leave the hero
+  const heroRef = useRef(null)
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
+  const visY = useTransform(scrollYProgress, [0, 1], [0, -90])
+  const copyY = useTransform(scrollYProgress, [0, 1], [0, 60])
+  const copyO = useTransform(scrollYProgress, [0, 0.8], [1, 0.2])
 
   const mx = useMotionValue(0)
   const my = useMotionValue(0)
@@ -47,16 +54,17 @@ export default function Hero() {
   }
 
   return (
-    <section className="hero" id="top">
+    <section className="hero" id="top" ref={heroRef}>
       <div className="hero-bg" aria-hidden="true">
         <div className="hero-grid" />
         <div className="hero-slant" />
+        <div className="hero-mesh" />
         <div className="orb orb-a" />
         <div className="orb orb-b" />
       </div>
 
       <div className="container hero-inner">
-        <motion.div className="hero-copy" variants={container} initial="hidden" animate="show">
+        <motion.div className="hero-copy" style={{ y: copyY, opacity: copyO }} variants={container} initial="hidden" animate="show">
           <motion.div variants={item} className="hero-brand">
             <LogoMark size={64} />
             <span>Evolish</span>
@@ -78,15 +86,18 @@ export default function Hero() {
             <br />
             <span className="rotator">
               every{' '}
+              {/* Fixed-width slot: invisible copies of every word reserve the widest one,
+                  so swapping words never changes the layout (and never nudges the phone). */}
               <span className="rotator-slot">
-                <AnimatePresence mode="wait">
+                {WORDS.map((word) => <span key={word} className="rotator-sizer" aria-hidden="true">{word}</span>)}
+                <AnimatePresence initial={false}>
                   <motion.span
                     key={WORDS[w]}
-                    className="gradient-text"
-                    initial={{ y: '70%', opacity: 0, filter: 'blur(8px)' }}
-                    animate={{ y: '0%', opacity: 1, filter: 'blur(0px)' }}
-                    exit={{ y: '-70%', opacity: 0, filter: 'blur(8px)' }}
-                    transition={{ duration: 0.55, ease }}
+                    className="rotator-word gradient-text"
+                    initial={{ y: '100%', opacity: 0 }}
+                    animate={{ y: '0%', opacity: 1 }}
+                    exit={{ y: '-100%', opacity: 0 }}
+                    transition={{ duration: 0.7, ease: [0.65, 0, 0.35, 1] }}
                   >
                     {WORDS[w]}
                   </motion.span>
@@ -109,6 +120,7 @@ export default function Hero() {
           </motion.ul>
         </motion.div>
 
+        <motion.div className="hero-visual-wrap" style={{ y: visY }}>
         <motion.div
           className="hero-visual"
           onMouseMove={onMove}
@@ -166,6 +178,7 @@ export default function Hero() {
             <span className="fc-icon"><TrendingUp size={18} /></span>
             <div><small>FACULTY VIEW</small><strong>Cohort progress is visible</strong></div>
           </motion.div>
+        </motion.div>
         </motion.div>
       </div>
     </section>

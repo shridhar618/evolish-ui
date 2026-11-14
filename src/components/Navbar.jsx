@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
+import { AnimatePresence, motion, useMotionValueEvent, useScroll, useSpring } from 'framer-motion'
 import { ArrowUpRight, ChevronDown, Menu, Smartphone, X, Mic, GraduationCap, BookOpen, Stethoscope, Briefcase, FileText, HelpCircle, Newspaper } from 'lucide-react'
 import Logo from './Logo'
 import { Magnetic, ThemeToggle, useActiveSection } from './Extras'
@@ -34,7 +34,14 @@ export default function Navbar({ onSignIn }) {
   const [open, setOpen] = useState(null)
   const [mobile, setMobile] = useState(false)
   const active = useActiveSection(SECTION_IDS)
-  const { scrollYProgress } = useScroll()
+  const { scrollY, scrollYProgress } = useScroll()
+  const [hidden, setHidden] = useState(false)
+  // Hide while scrolling down to read, reveal as soon as the user scrolls up
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    const prev = scrollY.getPrevious() ?? 0
+    setHidden(y > 400 && y > prev + 4 && !mobile && !open)
+    if (y < prev - 4) setHidden(false)
+  })
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 24 })
 
   useEffect(() => {
@@ -57,8 +64,8 @@ export default function Navbar({ onSignIn }) {
       <motion.header
         className={`nav ${scrolled ? 'is-scrolled' : ''}`}
         initial={{ y: -40, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        animate={{ y: hidden ? '-105%' : 0, opacity: 1 }}
+        transition={{ duration: hidden ? 0.35 : 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="nav-inner">
           <Logo />
