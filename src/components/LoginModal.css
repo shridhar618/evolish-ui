@@ -83,17 +83,21 @@ form { text-align: left; }
   will-change: transform;
   border: 1px solid rgba(255,255,255,.7);
 }
-/* thick card edge so the tilt reads as a solid slab */
-.modal::before {
-  content: ''; position: absolute; inset: 0; border-radius: inherit;
-  background: linear-gradient(135deg, #6b55e6, #2c1f86);
-  transform: translateZ(-14px);
-  box-shadow: 0 0 0 1px rgba(255,255,255,.08);
-}
+/* Card thickness comes from the stacked edge in the JS box-shadow (follows tilt + flip).
+   A thin inner highlight makes the top face read as glass-smooth. */
 .modal::after {
-  content: ''; position: absolute; inset: 0; border-radius: inherit;
-  background: var(--surface); transform: translateZ(-1px);
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), inset 0 0 0 1px rgba(106,90,249,.12);
 }
+:root[data-theme='dark'] .modal::after { box-shadow: inset 0 1px 0 rgba(255,255,255,.08), inset 0 0 0 1px rgba(160,148,255,.18); }
+
+/* Depth layers ease in/out; while flipping they lie flat so nothing pokes out edge-on */
+.modal .z1, .modal .z2, .modal .z3, .modal-form .field, .modal-form .submit.z3 { transition: transform .35s var(--ease), border-color .25s, box-shadow .25s, background .25s; }
+.modal.is-flipping .z1, .modal.is-flipping .z2, .modal.is-flipping .z3,
+.modal.is-flipping .modal-form .field, .modal.is-flipping .modal-form .submit.z3 { transform: none !important; }
+.modal.is-flipping .modal-glare { opacity: 0; }
+.modal { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.tabs button:disabled { cursor: default; }
 .modal > * { position: relative; z-index: 1; }
 .modal-clip { position: absolute !important; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; z-index: 2 !important; }
 .modal-clip .modal-sheen { position: absolute; }
@@ -105,7 +109,10 @@ form { text-align: left; }
 .z3 { transform: translateZ(64px); }
 .modal-form .field { transform: translateZ(26px); transition: transform .3s var(--ease), border-color .25s, box-shadow .25s, background .25s; }
 .modal-form .field:focus-within { transform: translateZ(46px); box-shadow: 0 0 0 4px rgba(91,71,214,.14), 0 18px 30px -16px rgba(74,55,180,.45); }
-.modal-form .submit.z3:hover:not(:disabled) { transform: translateZ(80px) translateY(-2px); }
+/* keep the button's depth modest so perspective doesn't enlarge it into the divider */
+.modal-form .submit.z3 { transform: translateZ(30px); }
+.modal-form .submit.z3:hover:not(:disabled) { transform: translateZ(40px) translateY(-2px); }
+.modal-form .divider { margin-top: 26px; }
 .modal-logo.z3 { filter: drop-shadow(0 14px 14px rgba(44,31,134,.35)); }
 .modal-close.z2:hover { transform: translateZ(40px) rotate(90deg); }
 .tabs.z1 .tab-pill { box-shadow: 0 8px 18px -8px rgba(30,24,90,.35); }

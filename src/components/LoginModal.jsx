@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { AnimatePresence, motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { AnimatePresence, animate, motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { ArrowRight, Eye, EyeOff, Lock, Mail, X, Building2, Loader2, Check } from 'lucide-react'
 import { LogoMark } from './Logo'
 import './LoginModal.css'
@@ -57,9 +57,40 @@ export default function LoginModal({ open, onClose }) {
   const glareX = useTransform(sx, [0, 1], [0, 100])
   const glareY = useTransform(sy, [0, 1], [0, 100])
   const glare = useMotionTemplate`radial-gradient(520px circle at ${glareX}% ${glareY}%, rgba(255,255,255,.55), transparent 55%)`
-  const shadowX = useTransform(sx, [0, 1], [40, -40])
-  const shadowY = useTransform(sy, [0, 1], [70, 20])
-  const shadow = useMotionTemplate`${shadowX}px ${shadowY}px 90px -20px rgba(20,16,80,.6)`
+  // Whole-card flip (added on top of the tilt)
+  const flip = useMotionValue(0)
+  const rotYTotal = useTransform([rotY, flip], ([a, b]) => a + b)
+  const flipScale = useTransform(flip, [-90, 0, 90], [0.92, 1, 0.92])
+
+  // Solid 3D slab: stacked edge layers + soft drop shadow that follow tilt and flip
+  const EDGE = ['#ece9fe', '#e2ddfd', '#d6cffc', '#c9c0fb', '#bbb0fa', '#ab9ef9', '#9b8cf8', '#8b7bf7', '#7c6af5', '#6a5af9']
+  const shadow = useTransform([sx, sy, flip], ([x, y, f]) => {
+    const lx = (0.5 - x) * 16 - (f / 90) * 22   // lateral lean of the edge
+    const ly = 13 + (y - 0.5) * -6              // edge thickness (always below)
+    const n = EDGE.length
+    const edge = EDGE.map((c, i) => `${((lx * (i + 1)) / n).toFixed(2)}px ${((ly * (i + 1)) / n).toFixed(2)}px 0 ${c}`).join(', ')
+    const dx = (0.5 - x) * 70 - (f / 90) * 40
+    return `${edge}, ${dx.toFixed(1)}px ${(48 + ly * 2).toFixed(1)}px 70px -18px rgba(28,20,110,.55), ${(dx / 3).toFixed(1)}px 18px 30px -12px rgba(28,20,110,.35)`
+  })
+
+  const [flipping, setFlipping] = useState(false)
+  const busy = useRef(false)
+  const switchTab = async (i) => {
+    if (i === tab || busy.current) return
+    busy.current = true
+    const dir = i > tab ? 1 : -1
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setTab(i); setStatus('idle'); busy.current = false; return
+    }
+    setFlipping(true)                                   // flatten depth layers first
+    await new Promise((r) => setTimeout(r, 90))
+    await animate(flip, 90 * dir, { duration: 0.32, ease: [0.55, 0, 0.9, 0.4] })
+    setTab(i); setStatus('idle')                        // swap content while edge-on (invisible)
+    flip.jump(-90 * dir)
+    await animate(flip, 0, { type: 'spring', stiffness: 160, damping: 19, mass: 0.9 })
+    setFlipping(false)
+    busy.current = false
+  }
   const fine = typeof window !== 'undefined' && window.matchMedia('(pointer: fine) and (min-width: 700px)').matches
 
   // Tilt only while the pointer is over the card, measured from the card's own centre,
@@ -90,12 +121,12 @@ export default function LoginModal({ open, onClose }) {
 
           <div className="modal-stage">
           <motion.div
-            className="modal"
             role="dialog" aria-modal="true" aria-labelledby="login-title"
             onMouseDown={(e) => e.stopPropagation()}
             onMouseMove={onMove}
             onMouseLeave={recenter}
-            style={{ rotateX: rotX, rotateY: rotY, boxShadow: fine ? shadow : undefined }}
+            className={`modal ${flipping ? 'is-flipping' : ''}`}
+            style={{ rotateX: rotX, rotateY: rotYTotal, scale: flipScale, boxShadow: shadow }}
             initial={{ opacity: 0, z: -300 }}
             animate={{ opacity: 1, z: 0 }}
             exit={{ opacity: 0, z: -200 }}
@@ -111,18 +142,15 @@ export default function LoginModal({ open, onClose }) {
               <LogoMark size={58} />
             </motion.div>
 
-            <AnimatePresence mode="wait">
-              <motion.div key={t.id} className="modal-heading z2"
-                initial={{ opacity: 0, rotateX: -80 }} animate={{ opacity: 1, rotateX: 0 }} exit={{ opacity: 0, rotateX: 80 }} transition={{ duration: 0.3 }}>
-                <h2 id="login-title">{t.title}</h2>
-                <p>{t.sub}</p>
-              </motion.div>
-            </AnimatePresence>
+            <div className="modal-heading z2">
+              <h2 id="login-title">{t.title}</h2>
+              <p>{t.sub}</p>
+            </div>
 
             <div className="tabs z1" role="tablist">
               {TABS.map((x, i) => (
-                <button key={x.id} role="tab" aria-selected={tab === i} className={tab === i ? 'on' : ''} onClick={() => { setTab(i); setStatus('idle') }}>
-                  {tab === i && <motion.span layoutId="tab-pill" className="tab-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
+                <button key={x.id} role="tab" aria-selected={tab === i} className={tab === i ? 'on' : ''} onClick={() => switchTab(i)} disabled={flipping}>
+                  {tab === i && <motion.span layoutId={flipping ? undefined : 'tab-pill'} className="tab-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} />}
                   <span className="tab-label">{i === 1 && <Building2 size={15} />}{x.label}</span>
                 </button>
               ))}
@@ -138,13 +166,10 @@ export default function LoginModal({ open, onClose }) {
                   <p>Redirecting to your dashboard…</p>
                 </motion.div>
               ) : (
-                <motion.form key={`form-${t.id}`} onSubmit={submit} noValidate
+                <motion.form key="form" onSubmit={submit} noValidate
                   className={`modal-form ${status === 'error' ? 'shake' : ''}`}
                   onAnimationEnd={() => status === 'error' && setStatus('idle')}
-                  initial={{ opacity: 0, rotateY: tab === 1 ? 90 : -90 }}
-                  animate={{ opacity: 1, rotateY: 0 }}
-                  exit={{ opacity: 0, rotateY: tab === 1 ? -90 : 90 }}
-                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}>
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   <label className="field-label" htmlFor="email">{t.field}</label>
                   <div className="field">
                     <Mail size={18} />

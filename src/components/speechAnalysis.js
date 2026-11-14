@@ -77,14 +77,14 @@ export function analyse(text, seconds, confidence = 0.85) {
 
   // Fluency: best between 110 and 160 wpm, penalised for fillers
   const paceScore = wpm === 0 ? 50 : 100 - Math.min(45, Math.abs(wpm - 135) * 0.6)
-  const fluency = clamp(paceScore - fillers.length * 4 - (n < 12 ? 12 : 0))
-  const grammarScore = clamp(96 - (grammar.length / Math.max(1, n / 20)) * 14)
-  const vocabulary = clamp(50 + ttr * 40 + longWords * 60)
+  const fluency = clamp(paceScore - fillers.length * 6 - (n < 12 ? 12 : 0))
+  const grammarScore = clamp(95 - (grammar.length / Math.max(1, n / 20)) * 20)
+  const vocabulary = clamp(40 + ttr * 35 + longWords * 45)
   const clarity = clamp(confidence * 100 + 4)
 
   // Rough CEFR estimate from the overall score
   const overall = (fluency + grammarScore + vocabulary + clarity) / 4
-  const level = overall >= 90 ? 'C1' : overall >= 82 ? 'B2' : overall >= 74 ? 'B1+' : overall >= 66 ? 'B1' : overall >= 55 ? 'A2' : 'A1'
+  const level = overall >= 92 ? 'C1' : overall >= 86 ? 'B2' : overall >= 78 ? 'B1+' : overall >= 70 ? 'B1' : overall >= 58 ? 'A2' : 'A1'
 
   let tip
   if (n < 12) tip = 'Try speaking for at least 20–30 seconds so there’s enough to assess — add an example or a reason.'
