@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, animate, motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { AnimatePresence, animate, motion, useAnimationFrame, useMotionTemplate, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { ArrowRight, Eye, EyeOff, Lock, Mail, X, Building2, Loader2, Check } from 'lucide-react'
 import { LogoMark } from './Logo'
 import './LoginModal.css'
@@ -59,19 +59,61 @@ export default function LoginModal({ open, onClose }) {
   const glare = useMotionTemplate`radial-gradient(520px circle at ${glareX}% ${glareY}%, rgba(255,255,255,.55), transparent 55%)`
   // Whole-card flip (added on top of the tilt)
   const flip = useMotionValue(0)
-  const rotYTotal = useTransform([rotY, flip], ([a, b]) => a + b)
   const flipScale = useTransform(flip, [-90, 0, 90], [0.92, 1, 0.92])
+
+  // Idle float: gentle sway while the pointer is away; fades out as soon as the user hovers
+  const hover = useMotionValue(0)
+  const hoverS = useSpring(hover, { stiffness: 70, damping: 18 })
+  const idleX = useMotionValue(0)
+  const idleY = useMotionValue(0)
+  const reduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  useAnimationFrame((time) => {
+    if (!open || reduced) return
+    const k = 1 - hoverS.get()
+    idleX.set(Math.sin(time / 1900) * 2.4 * k)
+    idleY.set(Math.cos(time / 2600) * 3.6 * k)
+  })
+
+  // Entrance: swings up from a backwards tilt
+  const enterX = useMotionValue(0)
+
+  // One source of truth for the card's angle — every 3D effect derives from it
+  const degX = useTransform([rotX, idleX, enterX], ([a, b, c]) => a + b + c)
+  const degY = useTransform([rotY, idleY, flip], ([a, b, c]) => a + b + c)
 
   // Solid 3D slab: stacked edge layers + soft drop shadow that follow tilt and flip
   const EDGE = ['#ece9fe', '#e2ddfd', '#d6cffc', '#c9c0fb', '#bbb0fa', '#ab9ef9', '#9b8cf8', '#8b7bf7', '#7c6af5', '#6a5af9']
-  const shadow = useTransform([sx, sy, flip], ([x, y, f]) => {
-    const lx = (0.5 - x) * 16 - (f / 90) * 22   // lateral lean of the edge
-    const ly = 13 + (y - 0.5) * -6              // edge thickness (always below)
+  const rad = (d) => (d * Math.PI) / 180
+  const clampN = (v, m) => Math.max(-m, Math.min(m, v))
+  const shadow = useTransform([degX, degY], ([ax, ay]) => {
+    const lx = clampN(-Math.sin(rad(ay)) * 46, 22)   // edge leans away from the turn
+    const ly = 13 + clampN(ax, 20) * 0.55            // thicker when the top tips toward you
     const n = EDGE.length
     const edge = EDGE.map((c, i) => `${((lx * (i + 1)) / n).toFixed(2)}px ${((ly * (i + 1)) / n).toFixed(2)}px 0 ${c}`).join(', ')
-    const dx = (0.5 - x) * 70 - (f / 90) * 40
-    return `${edge}, ${dx.toFixed(1)}px ${(48 + ly * 2).toFixed(1)}px 70px -18px rgba(28,20,110,.55), ${(dx / 3).toFixed(1)}px 18px 30px -12px rgba(28,20,110,.35)`
+    const dx = lx * 2.6
+    return `${edge}, ${dx.toFixed(1)}px ${(46 + ly * 2.2).toFixed(1)}px 70px -18px rgba(28,20,110,.5), ${(dx / 3).toFixed(1)}px 18px 30px -12px rgba(28,20,110,.32)`
   })
+
+  // Floor shadow under the card: slides opposite the tilt and narrows as the card turns
+  const floorX = useTransform(degY, (a) => clampN(-Math.sin(rad(a)) * 120, 60))
+  const floorScale = useTransform(degY, (a) => 1 - Math.abs(Math.sin(rad(a))) * 0.45)
+  const floorOpacity = useTransform(degX, (a) => 0.85 + clampN(a, 20) * 0.01)
+
+  // Rim light that follows the pointer around the card's border
+  const rim = useMotionTemplate`radial-gradient(320px circle at ${glareX}% ${glareY}%, #8b7bff, rgba(79,227,193,.9) 34%, rgba(124,108,255,.25) 60%, transparent 75%)`
+  const rimOpacity = useTransform(hoverS, [0, 1], [0.35, 1])
+
+  // Layers start flat, then rise one after another once the card has landed
+  const [phase, setPhase] = useState('flat') // flat | rising | idle
+  useEffect(() => {
+    if (!open) return
+    setPhase('flat')
+    enterX.jump(reduced ? 0 : 28)
+    const a = animate(enterX, 0, { type: 'spring', stiffness: 120, damping: 15, mass: 1 })
+    const t1 = setTimeout(() => setPhase('rising'), 380)
+    const t2 = setTimeout(() => setPhase('idle'), 1100)
+    return () => { a.stop(); clearTimeout(t1); clearTimeout(t2) }
+  }, [open, enterX, reduced])
 
   const [flipping, setFlipping] = useState(false)
   const busy = useRef(false)
@@ -98,26 +140,19 @@ export default function LoginModal({ open, onClose }) {
   const onMove = (e) => {
     if (!fine) return
     const r = e.currentTarget.getBoundingClientRect()
+    hover.set(1)
     px.set(Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)))
     py.set(Math.min(1, Math.max(0, (e.clientY - r.top) / r.height)))
   }
-  const recenter = () => { px.set(0.5); py.set(0.5) }
+  const recenter = () => { px.set(0.5); py.set(0.5); hover.set(0) }
   useEffect(() => { if (open) { px.jump(0.5); py.jump(0.5); sx.jump(0.5); sy.jump(0.5) } }, [open, px, py, sx, sy])
-  const faces = ['f', 'b', 'l', 'r', 't', 'd']
 
   return (
     <AnimatePresence>
       {open && (
         <motion.div className="modal-backdrop" data-lenis-prevent onMouseDown={onClose}
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-          <div className="scene-3d" aria-hidden="true">
-            <div className="cube c1">{faces.map((s) => <i key={s} className={s} />)}</div>
-            <div className="cube c2">{faces.map((s) => <i key={s} className={s} />)}</div>
-            <div className="torus t1"><i /><i /><i /><i /><i /><i /></div>
-            <div className="orb3d o1" />
-            <div className="orb3d o2" />
-            <div className="orb3d o3" />
-          </div>
+          <div className="modal-aura" aria-hidden="true" />
 
           <div className="modal-stage">
           <motion.div
@@ -125,15 +160,16 @@ export default function LoginModal({ open, onClose }) {
             onMouseDown={(e) => e.stopPropagation()}
             onMouseMove={onMove}
             onMouseLeave={recenter}
-            className={`modal ${flipping ? 'is-flipping' : ''}`}
-            style={{ rotateX: rotX, rotateY: rotYTotal, scale: flipScale, boxShadow: shadow }}
-            initial={{ opacity: 0, z: -300 }}
-            animate={{ opacity: 1, z: 0 }}
-            exit={{ opacity: 0, z: -200 }}
-            transition={{ type: 'spring', stiffness: 170, damping: 24 }}
+            className={`modal ${flipping || phase === 'flat' ? 'is-flipping' : ''} ${phase === 'rising' ? 'is-rising' : ''}`}
+            style={{ rotateX: degX, rotateY: degY, scale: flipScale, boxShadow: shadow }}
+            initial={{ opacity: 0, z: -320, y: 40 }}
+            animate={{ opacity: 1, z: 0, y: 0 }}
+            exit={{ opacity: 0, z: -220, y: 30, transition: { duration: 0.25 } }}
+            transition={{ type: 'spring', stiffness: 150, damping: 22 }}
           >
             <div className="modal-clip" aria-hidden="true">
               <div className="modal-sheen" />
+              {fine && <motion.div className="modal-rim" style={{ background: rim, opacity: rimOpacity }} />}
               {fine && <motion.div className="modal-glare" style={{ background: glare }} />}
             </div>
             <button className="modal-close z2" onClick={onClose} aria-label="Close"><X size={20} /></button>
@@ -212,6 +248,7 @@ export default function LoginModal({ open, onClose }) {
               )}
             </AnimatePresence>
           </motion.div>
+          <motion.div className="modal-floor" aria-hidden="true" style={{ x: floorX, scaleX: floorScale, opacity: floorOpacity }} />
           </div>
         </motion.div>
       )}
