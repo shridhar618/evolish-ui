@@ -1,0 +1,155 @@
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(15, 18, 40, .5);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  display: grid; place-items: center; padding: 16px; overflow-y: auto;
+}
+.modal {
+  position: relative; width: min(460px, 100%);
+  background: #fff; border-radius: 28px; padding: 36px 36px 28px;
+  box-shadow: 0 40px 100px -20px rgba(20, 16, 80, .55);
+  overflow: hidden; text-align: center;
+}
+.modal-sheen { position: absolute; inset: 0 0 auto; height: 140px; background: radial-gradient(500px 140px at 50% -20%, rgba(91,71,214,.14), transparent 70%); pointer-events: none; }
+.modal-close { position: absolute; top: 18px; right: 18px; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; color: var(--muted); transition: background .2s, color .2s, transform .3s var(--ease); }
+.modal-close:hover { background: var(--bg-soft); color: var(--ink); transform: rotate(90deg); }
+.modal-logo { display: inline-grid; margin-bottom: 8px; }
+.modal-heading h2 { font-size: 28px; font-weight: 700; letter-spacing: -.03em; }
+.modal-heading p { color: var(--muted); font-size: 15px; margin-top: 6px; }
+
+.tabs { position: relative; display: grid; grid-template-columns: 1fr 1fr; margin: 24px 0 22px; padding: 5px; background: var(--bg-soft); border-radius: 14px; }
+.tabs button { position: relative; padding: 11px 8px; font-weight: 600; font-size: 14.5px; color: var(--muted); border-radius: 10px; transition: color .25s; }
+.tabs button.on { color: var(--brand); }
+.tab-pill { position: absolute; inset: 0; background: #fff; border-radius: 10px; box-shadow: var(--shadow-sm); }
+.tab-label { position: relative; display: inline-flex; align-items: center; gap: 6px; }
+
+form { text-align: left; }
+.field-label { display: block; font-size: 14px; font-weight: 600; color: var(--ink); margin: 0 0 8px 2px; }
+.field-row { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; }
+.field-row .field-label { margin-bottom: 8px; }
+.forgot { color: var(--blue); font-weight: 600; font-size: 14px; margin-bottom: 8px; }
+.forgot:hover { text-decoration: underline; }
+.field {
+  display: flex; align-items: center; gap: 12px; padding: 0 16px;
+  border: 1.5px solid var(--line); border-radius: 14px; background: #f9fafc; color: var(--muted);
+  transition: border-color .25s, box-shadow .25s, background .25s;
+}
+.field:focus-within { border-color: var(--brand-2); background: #fff; box-shadow: 0 0 0 4px rgba(91,71,214,.14); color: var(--brand); }
+.field input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; padding: 15px 0; font: inherit; font-size: 15.5px; color: var(--ink); }
+.field input::placeholder { color: #9aa0b8; }
+.eye { color: var(--muted); display: grid; place-items: center; padding: 4px; }
+.eye:hover { color: var(--brand); }
+
+.remember-row { margin-top: 16px; }
+.remember { display: inline-flex; align-items: center; gap: 10px; font-size: 14.5px; font-weight: 500; color: var(--ink); cursor: pointer; }
+.remember input { position: absolute; opacity: 0; pointer-events: none; }
+.remember .box { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid #c7cbdb; display: grid; place-items: center; color: #fff; transition: all .2s; }
+.remember input:checked + .box { background: var(--brand); border-color: var(--brand); }
+.remember input:focus-visible + .box { box-shadow: 0 0 0 3px rgba(91,71,214,.3); }
+.hint { font-size: 12px; color: var(--muted); background: var(--bg-soft); padding: 4px 10px; border-radius: 20px; }
+
+.submit { width: 100%; justify-content: center; margin-top: 22px; padding: 16px; font-size: 16px; }
+.submit:hover:not(:disabled) { transform: translateY(-2px); }
+.submit:disabled { opacity: .85; cursor: wait; }
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.divider { display: flex; align-items: center; gap: 14px; margin: 22px 0 16px; color: var(--muted); font-size: 13.5px; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.google { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 13px; border: 1.5px solid var(--line); border-radius: 14px; font-weight: 600; color: var(--ink); transition: border-color .2s, background .2s, transform .2s; }
+.google:hover { border-color: #c7cbdb; background: var(--bg-soft); transform: translateY(-1px); }
+.new { text-align: center; margin-top: 18px; font-size: 14.5px; color: var(--muted); }
+.new a { color: var(--blue); font-weight: 600; }
+.new a:hover { text-decoration: underline; }
+
+.shake { animation: shake .45s cubic-bezier(.36,.07,.19,.97); }
+.shake .field { border-color: #f0a3a3; }
+@keyframes shake { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+
+.success { padding: 30px 0 20px; }
+.success-ring { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 18px; display: grid; place-items: center; background: #dff5ee; color: var(--teal); box-shadow: 0 0 0 10px rgba(16,179,138,.08); }
+.success h3 { font-size: 22px; }
+.success p { color: var(--muted); margin-top: 6px; }
+
+@media (max-width: 480px) { .modal { padding: 28px 20px 22px; } }
+
+/* ================= 3D layer ================= */
+.modal-backdrop { perspective: 1600px; overflow-x: hidden; }
+.modal-stage { position: relative; z-index: 1; width: min(460px, 100%); perspective: 1400px; transform-style: preserve-3d; }
+.modal {
+  width: 100%;
+  overflow: visible;            /* overflow:hidden would flatten 3D */
+  transform-style: preserve-3d;
+  will-change: transform;
+  border: 1px solid rgba(255,255,255,.7);
+}
+/* thick card edge so the tilt reads as a solid slab */
+.modal::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  background: linear-gradient(135deg, #6b55e6, #2c1f86);
+  transform: translateZ(-14px);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.08);
+}
+.modal::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  background: #fff; transform: translateZ(-1px);
+}
+.modal > * { position: relative; z-index: 1; }
+.modal-clip { position: absolute !important; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; z-index: 2 !important; }
+.modal-clip .modal-sheen { position: absolute; }
+.modal-glare { position: absolute; inset: 0; mix-blend-mode: soft-light; }
+.modal-close { position: absolute !important; z-index: 3 !important; }
+.modal-form, .modal-heading, .modal-logo, .success { transform-style: preserve-3d; }
+.z1 { transform: translateZ(22px); }
+.z2 { transform: translateZ(40px); }
+.z3 { transform: translateZ(64px); }
+.modal-form .field { transform: translateZ(26px); transition: transform .3s var(--ease), border-color .25s, box-shadow .25s, background .25s; }
+.modal-form .field:focus-within { transform: translateZ(46px); box-shadow: 0 0 0 4px rgba(91,71,214,.14), 0 18px 30px -16px rgba(74,55,180,.45); }
+.modal-form .submit.z3:hover:not(:disabled) { transform: translateZ(80px) translateY(-2px); }
+.modal-logo.z3 { filter: drop-shadow(0 14px 14px rgba(44,31,134,.35)); }
+.modal-close.z2:hover { transform: translateZ(40px) rotate(90deg); }
+.tabs.z1 .tab-pill { box-shadow: 0 8px 18px -8px rgba(30,24,90,.35); }
+
+/* ---------- floating 3D scene ---------- */
+.scene-3d { position: fixed; inset: 0; pointer-events: none; transform-style: preserve-3d; perspective: 1200px; }
+.cube { position: absolute; transform-style: preserve-3d; animation: cube-spin 18s linear infinite; }
+.cube i { position: absolute; inset: 0; border-radius: 14px; border: 1px solid rgba(255,255,255,.35);
+  background: linear-gradient(135deg, rgba(139,123,240,.45), rgba(44,31,134,.25)); backdrop-filter: blur(2px); }
+.cube.c1 { --s: 110px; width: var(--s); height: var(--s); left: 12%; top: 16%; }
+.cube.c2 { --s: 70px; width: var(--s); height: var(--s); right: 14%; bottom: 14%; animation-duration: 13s; animation-direction: reverse; }
+.cube.c2 i { background: linear-gradient(135deg, rgba(95,224,192,.5), rgba(16,179,138,.2)); }
+.cube .f { transform: translateZ(calc(var(--s) / 2)); }
+.cube .b { transform: rotateY(180deg) translateZ(calc(var(--s) / 2)); }
+.cube .l { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); }
+.cube .r { transform: rotateY(90deg) translateZ(calc(var(--s) / 2)); }
+.cube .t { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); }
+.cube .d { transform: rotateX(-90deg) translateZ(calc(var(--s) / 2)); }
+@keyframes cube-spin {
+  0% { transform: rotateX(0) rotateY(0) translateY(0); }
+  50% { transform: rotateX(180deg) rotateY(180deg) translateY(-30px); }
+  100% { transform: rotateX(360deg) rotateY(360deg) translateY(0); }
+}
+.torus { position: absolute; right: 10%; top: 12%; width: 150px; height: 150px; transform-style: preserve-3d; animation: torus-spin 14s linear infinite; }
+.torus i { position: absolute; inset: 0; border-radius: 50%; border: 3px solid rgba(34,184,230,.55); box-shadow: 0 0 18px rgba(34,184,230,.35); }
+.torus i:nth-child(1) { transform: rotateY(0deg); }
+.torus i:nth-child(2) { transform: rotateY(30deg); }
+.torus i:nth-child(3) { transform: rotateY(60deg); }
+.torus i:nth-child(4) { transform: rotateY(90deg); }
+.torus i:nth-child(5) { transform: rotateY(120deg); }
+.torus i:nth-child(6) { transform: rotateY(150deg); }
+@keyframes torus-spin { to { transform: rotateX(360deg) rotateZ(180deg); } }
+.orb3d { position: absolute; border-radius: 50%; animation: orb-float 9s ease-in-out infinite; }
+.orb3d.o1 { width: 90px; height: 90px; left: 20%; bottom: 14%; background: radial-gradient(circle at 30% 30%, #fff, #8b7bf0 35%, #2c1f86 80%); box-shadow: 0 30px 50px -10px rgba(44,31,134,.6); }
+.orb3d.o2 { width: 44px; height: 44px; right: 26%; top: 8%; background: radial-gradient(circle at 30% 30%, #fff, #5fe0c0 40%, #0a8d6c 85%); animation-delay: -3s; }
+.orb3d.o3 { width: 28px; height: 28px; left: 34%; top: 10%; background: radial-gradient(circle at 30% 30%, #fff, #4f8bff 40%, #1d5be0 85%); animation-delay: -6s; }
+@keyframes orb-float { 50% { transform: translate3d(20px, -36px, 60px); } }
+
+@media (max-width: 700px) {
+  .cube.c1 { --s: 70px; left: 4%; top: 4%; }
+  .torus { width: 90px; height: 90px; right: 4%; top: 3%; }
+  .cube.c2, .orb3d.o1 { opacity: .5; }
+  .z1, .z2, .z3, .modal-form .field { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cube, .torus, .orb3d { animation: none; }
+}
