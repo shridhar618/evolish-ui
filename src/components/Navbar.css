@@ -20,7 +20,6 @@
   position: sticky; top: 0; z-index: 50;
   background: var(--nav-bg);
   backdrop-filter: saturate(180%) blur(16px);
-  -webkit-backdrop-filter: saturate(180%) blur(16px);
   border-bottom: 1px solid transparent;
   transition: box-shadow .4s, border-color .4s;
 }
