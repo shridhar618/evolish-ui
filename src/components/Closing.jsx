@@ -12,7 +12,7 @@ const FAQS = [
   ['Can colleges evaluate Evolish before purchasing?', 'Yes. Colleges can start with a 10-day pilot for a representative cohort and review real participation data before choosing a model.'],
 ]
 
-export function FAQ() {
+export function FAQ({ onBook }) {
   const [open, setOpen] = useState(0)
   return (
     <section className="section faq" id="faq">
@@ -20,7 +20,7 @@ export function FAQ() {
         <Reveal className="faq-side">
           <span className="eyebrow">Common questions</span>
           <h2>Start with the path that fits you.</h2>
-          <p>Need help deciding? <a href="#" className="u-link">Talk to the Evolish team.</a></p>
+          <p>Need help deciding? <button className="u-link" onClick={onBook}>Talk to the Evolish team.</button></p>
         </Reveal>
         <div className="faq-list">
           {FAQS.map(([q, a], i) => {
@@ -53,7 +53,7 @@ export function FAQ() {
   )
 }
 
-export function CTA() {
+export function CTA({ onBook }) {
   const words = 'Start with your ambition. Evolish will help you find the words.'.split(' ')
   return (
     <section className="cta">
@@ -73,7 +73,7 @@ export function CTA() {
         </div>
         <Reveal delay={0.3} className="cta-actions">
           <Magnetic><a href="#" className="btn btn-white">Start learning English <ArrowUpRight size={18} /></a></Magnetic>
-          <a href="#colleges" className="cta-sub">Talk to us about your college <ArrowUpRight size={14} /></a>
+          <button className="cta-sub" onClick={onBook}>Talk to us about your college <ArrowUpRight size={14} /></button>
         </Reveal>
       </div>
     </section>

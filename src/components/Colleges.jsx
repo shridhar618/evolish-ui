@@ -11,7 +11,7 @@ const STEPS = [
 const CHART = [['Jul', 48, 60], ['Aug', 56, 68], ['Sep', 64, 78], ['Oct', 72, 88]]
 const ease = [0.22, 1, 0.36, 1]
 
-export default function Colleges() {
+export default function Colleges({ onBook }) {
   return (
     <section className="section colleges" id="colleges">
       <div className="container colleges-inner">
@@ -27,7 +27,7 @@ export default function Colleges() {
               </Reveal>
             ))}
           </ol>
-          <Reveal delay={0.4}><a href="#" className="btn btn-teal">Book a college walkthrough <ArrowUpRight size={18} /></a></Reveal>
+          <Reveal delay={0.4}><button className="btn btn-teal" onClick={onBook}>Book a college walkthrough <ArrowUpRight size={18} /></button></Reveal>
         </div>
 
         <Reveal delay={0.1} className="dash-wrap">

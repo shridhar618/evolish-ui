@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
-import { ArrowUpRight, ChevronDown, Menu, Smartphone, X, Mic, GraduationCap, Building2, BookOpen, Stethoscope, Briefcase, FileText, HelpCircle, Newspaper } from 'lucide-react'
+import { ArrowUpRight, ChevronDown, Menu, Smartphone, X, Mic, GraduationCap, BookOpen, Stethoscope, Briefcase, FileText, HelpCircle, Newspaper } from 'lucide-react'
 import Logo from './Logo'
-import { Magnetic, useActiveSection } from './Extras'
+import { Magnetic, ThemeToggle, useActiveSection } from './Extras'
 import './Navbar.css'
 
 const MENUS = {
@@ -107,6 +107,7 @@ export default function Navbar({ onSignIn }) {
           </nav>
           <div className="nav-actions">
             <a href="#" className="app-pill"><Smartphone size={16} /> Download App</a>
+            <ThemeToggle />
             <button className="signin" onClick={onSignIn}>Sign In</button>
             <Magnetic strength={0.2}><a href="#demo" className="btn btn-brand nav-cta">Take Free English Test</a></Magnetic>
             <button className="burger" onClick={() => setMobile(true)} aria-label="Open menu"><Menu /></button>

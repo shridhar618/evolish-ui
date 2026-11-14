@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page not found · Evolish</title>
+  <link rel="icon" type="image/svg+xml" href="/evolish-ui/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg: #fff; --ink: #0f1222; --muted: #6b7190; --brand: #4a37b4; --soft: #f0edfb; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #0b0c1a; --ink: #eef0ff; --muted: #8c92b0; --brand: #8a7af5; --soft: #1c1942; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; font-family: Inter, system-ui, sans-serif; background: var(--bg); color: var(--ink); overflow: hidden; text-align: center; }
+    .bg { position: fixed; inset: 0; z-index: -1; background-image: linear-gradient(rgba(74,55,180,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(74,55,180,.06) 1px, transparent 1px); background-size: 48px 48px; mask-image: radial-gradient(circle at center, #000 20%, transparent 70%); }
+    .orb { position: fixed; width: 420px; height: 420px; border-radius: 50%; filter: blur(80px); opacity: .35; z-index: -1; animation: f 12s ease-in-out infinite; }
+    .o1 { background: #8b7bf0; top: -120px; left: -80px; } .o2 { background: #5fe0c0; bottom: -160px; right: -100px; animation-delay: -6s; }
+    @keyframes f { 50% { transform: translate(60px, 40px) scale(1.1); } }
+    .code { font-family: Poppins, sans-serif; font-weight: 800; font-size: clamp(110px, 22vw, 220px); line-height: 1; letter-spacing: -.06em; display: flex; justify-content: center; gap: .04em; }
+    .code span { display: inline-block; background: linear-gradient(120deg, #5b47d6, #1d5be0 50%, #8b2fe0); -webkit-background-clip: text; background-clip: text; color: transparent; animation: bob 2.4s ease-in-out infinite; }
+    .code span:nth-child(2) { animation-delay: .2s; } .code span:nth-child(3) { animation-delay: .4s; }
+    @keyframes bob { 50% { transform: translateY(-14px); } }
+    .wave { display: flex; justify-content: center; align-items: center; gap: 5px; height: 40px; margin: 8px 0 20px; }
+    .wave i { width: 4px; height: 100%; border-radius: 4px; background: var(--brand); animation: eq 1s ease-in-out infinite; }
+    @keyframes eq { 0%,100% { transform: scaleY(.25); } 50% { transform: scaleY(1); } }
+    h1 { font-family: Poppins, sans-serif; font-size: clamp(26px, 4vw, 38px); letter-spacing: -.03em; margin: 0 0 10px; }
+    p { color: var(--muted); font-size: 17px; max-width: 460px; margin: 0 auto 30px; line-height: 1.6; }
+    .tip { display: inline-block; background: var(--soft); color: var(--brand); font-weight: 600; font-size: 14px; padding: 6px 12px; border-radius: 20px; margin-bottom: 18px; }
+    a.btn { display: inline-flex; align-items: center; gap: 8px; background: #1d5be0; color: #fff; text-decoration: none; font-weight: 600; padding: 15px 26px; border-radius: 14px; box-shadow: 0 14px 30px -12px rgba(29,91,224,.7); transition: transform .3s; }
+    a.btn:hover { transform: translateY(-2px); }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="bg"></div><div class="orb o1"></div><div class="orb o2"></div>
+  <main>
+    <div class="code" aria-hidden="true"><span>4</span><span>0</span><span>4</span></div>
+    <div class="wave" aria-hidden="true">
+      <i style="animation-delay:-.1s"></i><i style="animation-delay:-.4s"></i><i style="animation-delay:-.2s"></i><i style="animation-delay:-.7s"></i><i style="animation-delay:-.3s"></i><i style="animation-delay:-.6s"></i><i style="animation-delay:-.15s"></i><i style="animation-delay:-.5s"></i><i style="animation-delay:-.25s"></i>
+    </div>
+    <span class="tip">Error 404 · Page not found</span>
+    <h1>We couldn’t find the words — or this page.</h1>
+    <p>The link may be broken or the page may have moved. Let’s get you back to practising.</p>
+    <a class="btn" href="/evolish-ui/">Back to Evolish →</a>
+  </main>
+</body>
+</html>

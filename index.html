@@ -9,6 +9,30 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet" />
     <title>Evolish — Better English for every ambition</title>
+    <meta name="theme-color" content="#4a37b4" />
+
+    <!-- Social share preview -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Evolish" />
+    <meta property="og:title" content="Evolish — Better English for every ambition" />
+    <meta property="og:description" content="Build real communication confidence with guided practice, instant AI feedback and a CEFR-aligned A1–C2 path. For learners and colleges." />
+    <meta property="og:url" content="https://shridhar618.github.io/evolish-ui/" />
+    <meta property="og:image" content="https://shridhar618.github.io/evolish-ui/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Evolish — Better English for every ambition" />
+    <meta name="twitter:description" content="Guided practice, instant AI feedback and a clear CEFR-aligned learning path." />
+    <meta name="twitter:image" content="https://shridhar618.github.io/evolish-ui/og-image.png" />
+
+    <!-- Apply saved / system theme before first paint to avoid a flash -->
+    <script>
+      try {
+        var t = localStorage.getItem('evolish-theme');
+        if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+    </script>
   </head>
   <body>
     <div id="root"></div>

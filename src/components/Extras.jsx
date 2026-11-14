@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValue, useScroll, useSpring } from 'framer-motion'
-import { ArrowUp } from 'lucide-react'
+import { ArrowUp, Moon, Sun } from 'lucide-react'
 import { LogoMark } from './Logo'
 
 /* Intro loader: logo draws in, then the curtain lifts */
@@ -9,10 +9,10 @@ export function Preloader({ onDone }) {
   useEffect(() => {
     let v = 0
     const t = setInterval(() => {
-      v = Math.min(100, v + Math.random() * 18 + 6)
+      v = Math.min(100, v + Math.random() * 22 + 14)
       setPct(Math.round(v))
-      if (v >= 100) { clearInterval(t); setTimeout(onDone, 350) }
-    }, 90)
+      if (v >= 100) { clearInterval(t); setTimeout(onDone, 200) }
+    }, 70)
     return () => clearInterval(t)
   }, [onDone])
   return (
@@ -79,6 +79,56 @@ export function BackToTop() {
         </motion.button>
       )}
     </AnimatePresence>
+  )
+}
+
+/* Light / dark toggle with a circular reveal (View Transitions API when available) */
+export function ThemeToggle() {
+  const [theme, setTheme] = useState(() => document.documentElement.getAttribute('data-theme') || 'light')
+  const dark = theme === 'dark'
+
+  const apply = (next) => {
+    document.documentElement.setAttribute('data-theme', next)
+    try { localStorage.setItem('evolish-theme', next) } catch { /* private mode */ }
+    setTheme(next)
+  }
+
+  const toggle = (e) => {
+    const next = dark ? 'light' : 'dark'
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (!document.startViewTransition || reduce) {
+      document.documentElement.classList.add('theme-anim')
+      apply(next)
+      setTimeout(() => document.documentElement.classList.remove('theme-anim'), 600)
+      return
+    }
+    const x = e.clientX || window.innerWidth - 40
+    const y = e.clientY || 40
+    const r = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y))
+    const vt = document.startViewTransition(() => apply(next))
+    vt.ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
+        { duration: 650, easing: 'cubic-bezier(.22,1,.36,1)', pseudoElement: '::view-transition-new(root)' },
+      )
+    })
+  }
+
+  return (
+    <button className="theme-toggle" onClick={toggle} aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'} title={dark ? 'Light mode' : 'Dark mode'}>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={theme}
+          initial={{ rotate: -90, scale: 0, opacity: 0 }}
+          animate={{ rotate: 0, scale: 1, opacity: 1 }}
+          exit={{ rotate: 90, scale: 0, opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          style={{ display: 'grid' }}
+        >
+          {dark ? <Sun size={19} /> : <Moon size={19} />}
+        </motion.span>
+      </AnimatePresence>
+    </button>
   )
 }
 

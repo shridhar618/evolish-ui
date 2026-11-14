@@ -11,6 +11,7 @@ import Testimonials from './components/Testimonials'
 import Explore from './components/Explore'
 import { FAQ, CTA, Footer } from './components/Closing'
 import LoginModal from './components/LoginModal'
+import BookingModal from './components/BookingModal'
 import { BackToTop, Preloader } from './components/Extras'
 import './components/sections.css'
 import './components/extras.css'
@@ -19,9 +20,19 @@ const reduced = typeof window !== 'undefined' && window.matchMedia('(prefers-red
 
 export default function App() {
   const [login, setLogin] = useState(false)
-  const [loading, setLoading] = useState(!reduced)
+  // Show the intro loader only on the first visit of a browser session
+  const [loading, setLoading] = useState(() => {
+    if (reduced) return false
+    try { return !sessionStorage.getItem('evolish-seen') } catch { return true }
+  })
   const close = useCallback(() => setLogin(false), [])
-  const done = useCallback(() => setLoading(false), [])
+  const [booking, setBooking] = useState(false)
+  const openBook = useCallback(() => setBooking(true), [])
+  const closeBook = useCallback(() => setBooking(false), [])
+  const done = useCallback(() => {
+    try { sessionStorage.setItem('evolish-seen', '1') } catch { /* ignore */ }
+    setLoading(false)
+  }, [])
 
   // Smooth inertial scrolling (disabled for reduced-motion users)
   useEffect(() => {
@@ -51,15 +62,16 @@ export default function App() {
             <Paths />
             <HowItWorks />
             <TryDemo />
-            <Colleges />
+            <Colleges onBook={openBook} />
             <Testimonials />
             <Explore />
-            <FAQ />
-            <CTA />
+            <FAQ onBook={openBook} />
+            <CTA onBook={openBook} />
           </main>
           <Footer />
           <BackToTop />
           <LoginModal open={login} onClose={close} />
+          <BookingModal open={booking} onClose={closeBook} />
         </>
       )}
     </MotionConfig>
