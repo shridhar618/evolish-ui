@@ -23,12 +23,35 @@ function Waveform() {
   )
 }
 
-export default function Hero() {
+// Own component so the 3s word swap re-renders only this slot, not the whole hero
+function Rotator() {
   const [w, setW] = useState(0)
   useEffect(() => {
-    const t = setInterval(() => setW((v) => (v + 1) % WORDS.length), 3000)
+    const t = setInterval(() => { if (!document.hidden) setW((v) => (v + 1) % WORDS.length) }, 3000)
     return () => clearInterval(t)
   }, [])
+  return (
+    <span className="rotator-slot">
+      {/* Fixed-width slot: invisible copies of every word reserve the widest one,
+          so swapping words never changes the layout (and never nudges the phone). */}
+      {WORDS.map((word) => <span key={word} className="rotator-sizer" aria-hidden="true">{word}</span>)}
+      <AnimatePresence initial={false}>
+        <motion.span
+          key={WORDS[w]}
+          className="rotator-word gradient-text"
+          initial={{ y: '100%', opacity: 0 }}
+          animate={{ y: '0%', opacity: 1 }}
+          exit={{ y: '-100%', opacity: 0 }}
+          transition={{ duration: 0.7, ease: [0.65, 0, 0.35, 1] }}
+        >
+          {WORDS[w]}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  )
+}
+
+export default function Hero() {
 
   // Gentle scroll parallax: visual drifts up slower, copy fades as you leave the hero
   const heroRef = useRef(null)
@@ -86,23 +109,7 @@ export default function Hero() {
             <br />
             <span className="rotator">
               every{' '}
-              {/* Fixed-width slot: invisible copies of every word reserve the widest one,
-                  so swapping words never changes the layout (and never nudges the phone). */}
-              <span className="rotator-slot">
-                {WORDS.map((word) => <span key={word} className="rotator-sizer" aria-hidden="true">{word}</span>)}
-                <AnimatePresence initial={false}>
-                  <motion.span
-                    key={WORDS[w]}
-                    className="rotator-word gradient-text"
-                    initial={{ y: '100%', opacity: 0 }}
-                    animate={{ y: '0%', opacity: 1 }}
-                    exit={{ y: '-100%', opacity: 0 }}
-                    transition={{ duration: 0.7, ease: [0.65, 0, 0.35, 1] }}
-                  >
-                    {WORDS[w]}
-                  </motion.span>
-                </AnimatePresence>
-              </span>
+              <Rotator />
             </span>
           </motion.h1>
           <motion.p variants={item} className="hero-sub">
@@ -140,7 +147,7 @@ export default function Hero() {
               <div className="ps-level">
                 <small>Current level</small>
                 <strong>B1 Intermediate</strong>
-                <div className="ps-bar"><motion.i initial={{ width: 0 }} animate={{ width: '64%' }} transition={{ duration: 1.6, delay: 1, ease }} /></div>
+                <div className="ps-bar"><motion.i style={{ width: '64%' }} initial={{ x: '-101%' }} animate={{ x: 0 }} transition={{ duration: 1.6, delay: 1, ease }} /></div>
               </div>
               <div className="ps-lesson">
                 <small>SPEAKING · 8 MIN</small>

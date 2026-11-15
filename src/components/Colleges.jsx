@@ -49,10 +49,12 @@ export default function Colleges({ onBook }) {
               <div className="bars">
                 {CHART.map(([m, a, b], i) => (
                   <div className="bar-group" key={m}>
-                    <div className="bar-pair">
-                      <motion.i className="p" initial={{ height: 0 }} whileInView={{ height: `${a}%` }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.3 + i * 0.12, ease }}><b>{a}</b></motion.i>
-                      <motion.i className="t" initial={{ height: 0 }} whileInView={{ height: `${b}%` }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.4 + i * 0.12, ease }}><b>{b}</b></motion.i>
-                    </div>
+                    <motion.div className="bar-pair" initial="h" whileInView="s" viewport={{ once: true }}>
+                      <motion.i className="p" style={{ height: `${a}%`, originY: 1 }}
+                        variants={{ h: { scaleY: 0 }, s: { scaleY: 1, transition: { duration: 1, delay: 0.3 + i * 0.12, ease } } }}><b>{a}</b></motion.i>
+                      <motion.i className="t" style={{ height: `${b}%`, originY: 1 }}
+                        variants={{ h: { scaleY: 0 }, s: { scaleY: 1, transition: { duration: 1, delay: 0.4 + i * 0.12, ease } } }}><b>{b}</b></motion.i>
+                    </motion.div>
                     <span>{m}</span>
                   </div>
                 ))}

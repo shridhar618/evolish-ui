@@ -103,9 +103,10 @@ export default function Paths() {
               {[['Listening', 82], ['Speaking', 68], ['Reading', 76], ['Writing', 71]].map(([k, v], i) => (
                 <div className="skill-row" key={k}>
                   <div><span>{k}</span><span>{v}%</span></div>
-                  <div className="skill-track">
-                    <motion.i initial={{ width: 0 }} whileInView={{ width: `${v}%` }} viewport={{ once: true }} transition={{ duration: 1.3, delay: 0.3 + i * 0.12, ease }} />
-                  </div>
+                  <motion.div className="skill-track" initial="h" whileInView="s" viewport={{ once: true }}>
+                    <motion.i style={{ width: `${v}%` }}
+                      variants={{ h: { x: '-101%' }, s: { x: 0, transition: { duration: 1.3, delay: 0.3 + i * 0.12, ease } } }} />
+                  </motion.div>
                 </div>
               ))}
               <small className="illus">Illustrative cohort data</small>

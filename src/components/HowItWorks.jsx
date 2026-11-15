@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Play, Radar, TrendingUp, ArrowRight } from 'lucide-react'
 import Reveal, { SplitHeading } from './Reveal'
@@ -22,14 +22,22 @@ const ease = [0.22, 1, 0.36, 1]
 
 export default function HowItWorks() {
   const [lvl, setLvl] = useState(2)
+  // Cursor spotlight: moved with a transform (compositor only), at most once per frame
+  const spot = useRef(null)
+  const pending = useRef(0)
+  const onMove = (e) => {
+    if (pending.current) return
+    const { clientX, clientY, currentTarget } = e
+    pending.current = requestAnimationFrame(() => {
+      pending.current = 0
+      const r = currentTarget.getBoundingClientRect()
+      if (spot.current) spot.current.style.transform = `translate3d(${clientX - r.left - r.width / 2}px, ${clientY - r.top - r.height / 2}px, 0)`
+    })
+  }
   return (
-    <section className="section how" id="how" onMouseMove={(e) => {
-      const r = e.currentTarget.getBoundingClientRect()
-      e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`)
-      e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`)
-    }}>
+    <section className="section how" id="how" onMouseMove={onMove}>
       <div className="how-aurora" aria-hidden="true" />
-      <div className="spot" aria-hidden="true" />
+      <div className="spot" ref={spot} aria-hidden="true" />
       <div className="container">
         <div className="how-head">
           <Reveal>

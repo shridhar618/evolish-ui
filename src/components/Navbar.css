@@ -3,9 +3,11 @@
 .badge-new {
   font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: .12em;
   background: var(--teal); color: #052a20; padding: 4px 9px; border-radius: 6px;
-  animation: pulse-badge 2.4s ease-in-out infinite;
+  position: relative; isolation: isolate;
 }
-@keyframes pulse-badge { 0%,100% { box-shadow: 0 0 0 0 rgba(16,179,138,.6); } 50% { box-shadow: 0 0 0 6px rgba(16,179,138,0); } }
+/* pulse ring on a pseudo-element: transform + opacity only, so it never repaints */
+.badge-new::after { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--teal); animation: pulse-badge 2.4s ease-out infinite; }
+@keyframes pulse-badge { 0% { transform: scale(1); opacity: .55; } 70%, 100% { transform: scale(1.3, 1.65); opacity: 0; } }
 .announce-link { display: inline-flex; align-items: center; gap: 4px; color: #fff; font-weight: 600; border-bottom: 1.5px solid rgba(255,255,255,.4); transition: border-color .3s var(--ease); }
 .announce-link:hover { border-color: #fff; }
 

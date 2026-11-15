@@ -1,19 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion, useMotionValue, useScroll, useSpring } from 'framer-motion'
+import { AnimatePresence, animate, motion, useMotionValue, useScroll, useSpring } from 'framer-motion'
 import { ArrowUp, Moon, Sun } from 'lucide-react'
 import { LogoMark } from './Logo'
 
 /* Intro loader: logo draws in, then the curtain lifts */
 export function Preloader({ onDone }) {
-  const [pct, setPct] = useState(0)
+  const bar = useRef(null)
+  const num = useRef(null)
+  // One eased 0→100 run written straight to the DOM (no re-render per tick, no stepping)
   useEffect(() => {
-    let v = 0
-    const t = setInterval(() => {
-      v = Math.min(100, v + Math.random() * 22 + 14)
-      setPct(Math.round(v))
-      if (v >= 100) { clearInterval(t); setTimeout(onDone, 200) }
-    }, 70)
-    return () => clearInterval(t)
+    let t
+    const c = animate(0, 100, {
+      duration: 0.75, ease: [0.65, 0, 0.35, 1],
+      onUpdate: (v) => {
+        if (bar.current) bar.current.style.transform = `scaleX(${v / 100})`
+        if (num.current) num.current.textContent = `${Math.round(v)}%`
+      },
+      onComplete: () => { t = setTimeout(onDone, 180) },
+    })
+    return () => { c.stop(); clearTimeout(t) }
   }, [onDone])
   return (
     <motion.div className="preloader" exit={{ y: '-100%' }} transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}>
@@ -23,8 +28,8 @@ export function Preloader({ onDone }) {
       <motion.div className="pl-word" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
         evolish
       </motion.div>
-      <div className="pl-bar"><i style={{ width: `${pct}%` }} /></div>
-      <span className="pl-pct">{pct}%</span>
+      <div className="pl-bar"><i ref={bar} /></div>
+      <span className="pl-pct" ref={num}>0%</span>
     </motion.div>
   )
 }
@@ -64,7 +69,7 @@ export function BackToTop() {
         <motion.button
           className="to-top"
           aria-label="Back to top"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          onClick={() => (window.__lenis ? window.__lenis.scrollTo(0, { duration: 1.2 }) : window.scrollTo({ top: 0, behavior: 'smooth' }))}
           initial={{ opacity: 0, scale: 0.6, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.6, y: 20 }}

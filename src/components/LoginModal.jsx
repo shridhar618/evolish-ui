@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, animate, motion, useAnimationFrame, useMotionTemplate, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { ArrowRight, Eye, EyeOff, Lock, Mail, X, Building2, Loader2, Check } from 'lucide-react'
 import { LogoMark } from './Logo'
+import useFocusTrap from './useFocusTrap'
 import './LoginModal.css'
 
 const TABS = [
@@ -28,6 +29,8 @@ export default function LoginModal({ open, onClose }) {
   const [pw, setPw] = useState('')
   const [status, setStatus] = useState('idle') // idle | loading | done | error
   const [gState, setGState] = useState('idle') // idle | loading | info
+  const dialog = useRef(null)
+  useFocusTrap(dialog, open)
 
   useEffect(() => {
     if (!open) return
@@ -159,6 +162,7 @@ export default function LoginModal({ open, onClose }) {
 
           <div className="modal-stage">
           <motion.div
+            ref={dialog} tabIndex={-1}
             role="dialog" aria-modal="true" aria-labelledby="login-title"
             onMouseDown={(e) => e.stopPropagation()}
             onMouseMove={onMove}

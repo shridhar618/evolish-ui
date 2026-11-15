@@ -101,17 +101,27 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+/* native smooth scrolling only when Lenis isn't running (the two fight each other) */
+html:not(.lenis) { scroll-behavior: smooth; }
 body {
   margin: 0;
   font-family: var(--font-body);
   color: var(--text);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
-h1, h2, h3, h4 { margin: 0; color: var(--ink); font-family: var(--font-display); font-weight: 700; letter-spacing: -0.03em; line-height: 1.06; }
-p { margin: 0; line-height: 1.65; }
+html { scrollbar-color: color-mix(in srgb, var(--brand) 40%, var(--line)) transparent; }
+
+/* Keyboard users can jump past the navigation */
+.skip-link { position: fixed; left: 16px; top: 12px; z-index: 300; padding: 12px 18px; border-radius: 12px; background: var(--brand); color: #fff; font-weight: 600; box-shadow: var(--shadow-md); transform: translateY(-200%); transition: transform .3s var(--ease); }
+.skip-link:focus-visible { transform: none; outline-color: #fff; outline-offset: -5px; }
+main:focus, [role='dialog']:focus { outline: none; }
+/* balance = no one-word last lines in headings; pretty = no orphans in body copy */
+h1, h2, h3, h4 { margin: 0; color: var(--ink); font-family: var(--font-display); font-weight: 700; letter-spacing: -0.03em; line-height: 1.06; text-wrap: balance; }
+p { margin: 0; line-height: 1.65; text-wrap: pretty; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
 ::selection { background: var(--brand); color: #fff; }
@@ -154,6 +164,9 @@ button { font: inherit; cursor: pointer; border: 0; background: none; color: inh
   isolation: isolate;
   white-space: nowrap;
 }
+/* tactile press + keyboard focus */
+.btn:active:not(:disabled) { transform: translateY(0) scale(.97); transition-duration: .12s; }
+:focus-visible { outline: 2px solid var(--brand-2); outline-offset: 3px; }
 .btn svg { transition: transform .35s var(--ease); }
 .btn:hover svg { transform: translate(3px, -3px); }
 .btn.down:hover svg { transform: translateY(3px); }
@@ -185,8 +198,8 @@ button { font: inherit; cursor: pointer; border: 0; background: none; color: inh
 
 .section { padding: 120px 0; position: relative; }
 .section-head { text-align: center; max-width: 900px; margin: 0 auto 64px; }
-.section-head h2 { font-size: clamp(38px, 5.6vw, 76px); margin: 18px 0 20px; }
-.section-head p { font-size: 19px; color: var(--muted); max-width: 680px; margin: 0 auto; }
+.section-head h2 { font-size: clamp(34px, 4.7vw, 64px); margin: 18px 0 20px; line-height: 1.08; }
+.section-head p { font-size: 18.5px; color: var(--muted); max-width: 620px; margin: 0 auto; }
 
 .link-arrow { display: inline-flex; align-items: center; gap: 6px; color: var(--brand); font-weight: 600; }
 .link-arrow svg { transition: transform .3s var(--ease); }

@@ -2,7 +2,8 @@
 .preloader { position: fixed; inset: 0; z-index: 200; background: var(--navy); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: #fff; }
 .pl-word { font-family: var(--font-display); font-size: 34px; font-weight: 700; letter-spacing: -.03em; }
 .pl-bar { width: 180px; height: 3px; border-radius: 3px; background: rgba(255,255,255,.12); overflow: hidden; margin-top: 10px; }
-.pl-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--brand-2), var(--mint)); transition: width .3s var(--ease); }
+.pl-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--brand-2), var(--mint)); transform: scaleX(0); transform-origin: 0 50%; will-change: transform; }
+.pl-pct { font-variant-numeric: tabular-nums; }
 .pl-pct { font-family: var(--font-mono); font-size: 12px; opacity: .6; }
 
 /* ---------- Back to top ---------- */
@@ -17,7 +18,7 @@
 .nav-link.current { color: var(--brand); }
 
 /* ---------- Spotlight on dark section ---------- */
-.how .spot { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .4s var(--ease); background: radial-gradient(500px circle at var(--mx, 50%) var(--my, 50%), rgba(95,224,192,.09), transparent 60%); }
+.how .spot { position: absolute; left: 50%; top: 50%; width: 600px; height: 600px; margin: -300px 0 0 -300px; pointer-events: none; opacity: 0; transition: opacity .4s var(--ease); background: radial-gradient(circle closest-side, rgba(95,224,192,.09), transparent); will-change: transform; }
 .how:hover .spot { opacity: 1; }
 
 /* ---------- Hero char split ---------- */

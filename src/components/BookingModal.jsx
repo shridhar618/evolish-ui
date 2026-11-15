@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, Check, Loader2, X, CalendarCheck, AlertCircle } from 'lucide-react'
 import { BOOKING_FORM_ENDPOINT } from '../config'
+import useFocusTrap from './useFocusTrap'
 import './BookingModal.css'
 
 const EMPTY = { name: '', email: '', phone: '', college: '', role: 'Faculty', size: '100–500', message: '' }
@@ -21,6 +22,8 @@ export default function BookingModal({ open, onClose }) {
   const [f, setF] = useState(EMPTY)
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle') // idle | sending | done | failed
+  const dialog = useRef(null)
+  useFocusTrap(dialog, open)
 
   useEffect(() => {
     if (!open) return
@@ -71,6 +74,7 @@ export default function BookingModal({ open, onClose }) {
       {open && (
         <motion.div className="bk-backdrop" data-lenis-prevent onMouseDown={onClose} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <motion.div
+            ref={dialog} tabIndex={-1}
             className="bk-modal" role="dialog" aria-modal="true" aria-labelledby="bk-title"
             onMouseDown={(e) => e.stopPropagation()}
             initial={{ opacity: 0, y: 30, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 20, scale: 0.97 }}

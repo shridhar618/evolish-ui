@@ -72,7 +72,7 @@ export function CTA({ onBook }) {
           </motion.h2>
         </div>
         <Reveal delay={0.3} className="cta-actions">
-          <Magnetic><a href="#" className="btn btn-white">Start learning English <ArrowUpRight size={18} /></a></Magnetic>
+          <Magnetic><a href="#demo" className="btn btn-white">Start learning English <ArrowUpRight size={18} /></a></Magnetic>
           <button className="cta-sub" onClick={onBook}>Talk to us about your college <ArrowUpRight size={14} /></button>
         </Reveal>
       </div>
@@ -90,18 +90,18 @@ export function Footer() {
   return (
     <footer className="footer">
       <div className="container footer-grid">
-        <div className="footer-brand">
+        <Reveal className="footer-brand" y={20}>
           <Logo />
           <p>AI-powered spoken English practice, LSRW skills training, and CEFR language assessment platform for learners and institutions.</p>
           <span className="cert"><Sparkles size={14} /> CEFR A1–C2 aligned</span>
-        </div>
-        {COLS.map(([h, tone, links]) => (
-          <div key={h} className="footer-col">
+        </Reveal>
+        {COLS.map(([h, tone, links], i) => (
+          <Reveal key={h} className="footer-col" y={20} delay={0.08 * (i + 1)}>
             <h5><i className={tone} />{h}</h5>
             {links.map(([l, sub]) => (
               <a href="#" key={l}>{l}{sub && <span className={`sub ${tone}`}>{sub}</span>}</a>
             ))}
-          </div>
+          </Reveal>
         ))}
       </div>
       <div className="container footer-bottom">
