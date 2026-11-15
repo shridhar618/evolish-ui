@@ -86,7 +86,7 @@ export default function LoginModal({ open, onClose }) {
   // drifting only slightly with the tilt so it stays wrapped around every side
   const rad = (d) => (d * Math.PI) / 180
   const clampN = (v, m) => Math.max(-m, Math.min(m, v))
-  const LAYERS = [[1, .14], [3, .12], [6, .11], [12, .10], [22, .09], [38, .08], [60, .07], [90, .06]]
+  const LAYERS = [[1, .2], [3, .17], [6, .16], [12, .15], [22, .13], [38, .12], [60, .1], [90, .09]]
   const shadow = useTransform([degX, degY], ([ax, ay]) => {
     const lx = clampN(-Math.sin(rad(ay)) * 30, 8)
     const ly = clampN(Math.sin(rad(ax)) * 30, 8)
@@ -94,7 +94,7 @@ export default function LoginModal({ open, onClose }) {
       const k = b / 90
       return `${(lx * k).toFixed(2)}px ${(ly * k).toFixed(2)}px ${b}px ${Math.round(b / 6)}px rgba(14,14,18,${a})`
     }).join(', ')
-    return `0 0 0 1px rgba(14,14,18,.08), ${rings}`
+    return `0 0 0 1px rgba(14,14,18,.12), ${rings}`
   })
 
   // Floor shadow under the card: slides opposite the tilt and narrows as the card turns
