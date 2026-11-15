@@ -27,6 +27,7 @@ export default function LoginModal({ open, onClose }) {
   const [email, setEmail] = useState('')
   const [pw, setPw] = useState('')
   const [status, setStatus] = useState('idle') // idle | loading | done | error
+  const [gState, setGState] = useState('idle') // idle | loading | info
 
   useEffect(() => {
     if (!open) return
@@ -36,7 +37,7 @@ export default function LoginModal({ open, onClose }) {
     return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = '' }
   }, [open, onClose])
 
-  useEffect(() => { if (!open) { setStatus('idle'); setPw('') } }, [open])
+  useEffect(() => { if (!open) { setStatus('idle'); setPw(''); setGState('idle') } }, [open])
 
   const submit = (e) => {
     e.preventDefault()
@@ -242,7 +243,24 @@ export default function LoginModal({ open, onClose }) {
                   </button>
 
                   <div className="divider"><span>Or continue with</span></div>
-                  <button type="button" className="google z2"><GoogleIcon /> Sign in with Google</button>
+                  <button type="button" className={`google z2 ${gState === 'loading' ? 'is-loading' : ''}`} disabled={gState === 'loading'}
+                    onClick={() => { setGState('loading'); setTimeout(() => setGState('info'), 1100) }}>
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.span key={gState === 'loading' ? 'l' : 'i'} className="google-inner"
+                        initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}>
+                        {gState === 'loading' ? <><Loader2 size={18} className="spin" /> Connecting to Google…</> : <><GoogleIcon /> Sign in with Google</>}
+                      </motion.span>
+                    </AnimatePresence>
+                  </button>
+                  <AnimatePresence>
+                    {gState === 'info' && (
+                      <motion.p className="google-note" role="status"
+                        initial={{ opacity: 0, height: 0, marginTop: 0 }} animate={{ opacity: 1, height: 'auto', marginTop: 10 }} exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}>
+                        <span className="google-note-inner">Google sign-in will be available once your Evolish account is linked. Please use email for now.</span>
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
                   <p className="new">New to Evolish? <a href="#">Create account</a></p>
                 </motion.form>
               )}
