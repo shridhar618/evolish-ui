@@ -51,10 +51,10 @@ export default function LoginModal({ open, onClose }) {
   // 3D tilt driven by pointer position over the whole backdrop
   const px = useMotionValue(0.5)
   const py = useMotionValue(0.5)
-  const sx = useSpring(px, { stiffness: 120, damping: 18 })
-  const sy = useSpring(py, { stiffness: 120, damping: 18 })
-  const rotY = useTransform(sx, [0, 1], [-7, 7])
-  const rotX = useTransform(sy, [0, 1], [6, -6])
+  const sx = useSpring(px, { stiffness: 55, damping: 20, mass: 1.2 })
+  const sy = useSpring(py, { stiffness: 55, damping: 20, mass: 1.2 })
+  const rotY = useTransform(sx, [0, 1], [-3, 3])
+  const rotX = useTransform(sy, [0, 1], [2.5, -2.5])
   const glareX = useTransform(sx, [0, 1], [0, 100])
   const glareY = useTransform(sy, [0, 1], [0, 100])
   const glare = useMotionTemplate`radial-gradient(520px circle at ${glareX}% ${glareY}%, rgba(255,255,255,.55), transparent 55%)`
@@ -71,8 +71,8 @@ export default function LoginModal({ open, onClose }) {
   useAnimationFrame((time) => {
     if (!open || reduced) return
     const k = 1 - hoverS.get()
-    idleX.set(Math.sin(time / 1900) * 2.4 * k)
-    idleY.set(Math.cos(time / 2600) * 3.6 * k)
+    idleX.set(Math.sin(time / 2600) * 1 * k)
+    idleY.set(Math.cos(time / 3400) * 1.4 * k)
   })
 
   // Entrance: swings up from a backwards tilt
@@ -83,20 +83,20 @@ export default function LoginModal({ open, onClose }) {
   const degY = useTransform([rotY, idleY, flip], ([a, b, c]) => a + b + c)
 
   // Solid 3D slab: stacked edge layers + soft drop shadow that follow tilt and flip
-  const EDGE = ['#ece9fe', '#e2ddfd', '#d6cffc', '#c9c0fb', '#bbb0fa', '#ab9ef9', '#9b8cf8', '#8b7bf7', '#7c6af5', '#6a5af9']
+  const EDGE = ['rgba(24,24,30,.10)', 'rgba(24,24,30,.13)', 'rgba(24,24,30,.16)', 'rgba(24,24,30,.19)', 'rgba(24,24,30,.22)', 'rgba(24,24,30,.25)', 'rgba(24,24,30,.28)', 'rgba(24,24,30,.31)']
   const rad = (d) => (d * Math.PI) / 180
   const clampN = (v, m) => Math.max(-m, Math.min(m, v))
   const shadow = useTransform([degX, degY], ([ax, ay]) => {
-    const lx = clampN(-Math.sin(rad(ay)) * 46, 22)   // edge leans away from the turn
-    const ly = 13 + clampN(ax, 20) * 0.55            // thicker when the top tips toward you
+    const lx = clampN(-Math.sin(rad(ay)) * 40, 14)   // edge leans away from the turn
+    const ly = 8 + clampN(ax, 20) * 0.4            // thicker when the top tips toward you
     const n = EDGE.length
     const edge = EDGE.map((c, i) => `${((lx * (i + 1)) / n).toFixed(2)}px ${((ly * (i + 1)) / n).toFixed(2)}px 0 ${c}`).join(', ')
     const dx = lx * 2.6
-    return `${edge}, ${dx.toFixed(1)}px ${(46 + ly * 2.2).toFixed(1)}px 70px -18px rgba(28,20,110,.5), ${(dx / 3).toFixed(1)}px 18px 30px -12px rgba(28,20,110,.32)`
+    return `${edge}, ${dx.toFixed(1)}px ${(46 + ly * 2.2).toFixed(1)}px 90px -20px rgba(12,12,16,.55), ${(dx / 3).toFixed(1)}px 22px 44px -14px rgba(12,12,16,.35), 0 2px 6px rgba(12,12,16,.12)`
   })
 
   // Floor shadow under the card: slides opposite the tilt and narrows as the card turns
-  const floorX = useTransform(degY, (a) => clampN(-Math.sin(rad(a)) * 120, 60))
+  const floorX = useTransform(degY, (a) => clampN(-Math.sin(rad(a)) * 120, 30))
   const floorScale = useTransform(degY, (a) => 1 - Math.abs(Math.sin(rad(a))) * 0.45)
   const floorOpacity = useTransform(degX, (a) => 0.85 + clampN(a, 20) * 0.01)
 

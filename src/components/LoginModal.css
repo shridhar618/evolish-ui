@@ -7,7 +7,7 @@
 .modal {
   position: relative; width: min(460px, 100%);
   background: var(--surface); border-radius: 28px; padding: 36px 36px 28px;
-  box-shadow: 0 40px 100px -20px rgba(20, 16, 80, .55);
+  box-shadow: 0 40px 100px -20px rgba(12, 12, 16, .55);
   overflow: hidden; text-align: center;
 }
 .modal-sheen { position: absolute; inset: 0 0 auto; height: 140px; background: radial-gradient(500px 140px at 50% -20%, rgba(91,71,214,.14), transparent 70%); pointer-events: none; }
@@ -152,8 +152,8 @@ form { text-align: left; }
 .modal-floor {
   position: absolute; left: 6%; right: 6%; bottom: -46px; height: 56px; z-index: -1; pointer-events: none;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(10, 6, 45, .85) 0%, rgba(30, 20, 110, .45) 42%, transparent 72%);
-  filter: blur(10px);
+  background: radial-gradient(ellipse at center, rgba(8, 8, 12, .7) 0%, rgba(20, 20, 26, .35) 45%, transparent 72%);
+  filter: blur(16px);
 }
 
 /* calm brand glow behind the card (replaces decorative shapes) */
