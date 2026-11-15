@@ -82,17 +82,19 @@ export default function LoginModal({ open, onClose }) {
   const degX = useTransform([rotX, idleX, enterX], ([a, b, c]) => a + b + c)
   const degY = useTransform([rotY, idleY, flip], ([a, b, c]) => a + b + c)
 
-  // Solid 3D slab: stacked edge layers + soft drop shadow that follow tilt and flip
-  const EDGE = ['rgba(24,24,30,.10)', 'rgba(24,24,30,.13)', 'rgba(24,24,30,.16)', 'rgba(24,24,30,.19)', 'rgba(24,24,30,.22)', 'rgba(24,24,30,.25)', 'rgba(24,24,30,.28)', 'rgba(24,24,30,.31)']
+  // Layered smoky shadow all around the card: rings of growing blur stacked one over another,
+  // drifting only slightly with the tilt so it stays wrapped around every side
   const rad = (d) => (d * Math.PI) / 180
   const clampN = (v, m) => Math.max(-m, Math.min(m, v))
+  const LAYERS = [[1, .14], [3, .12], [6, .11], [12, .10], [22, .09], [38, .08], [60, .07], [90, .06]]
   const shadow = useTransform([degX, degY], ([ax, ay]) => {
-    const lx = clampN(-Math.sin(rad(ay)) * 40, 14)   // edge leans away from the turn
-    const ly = 8 + clampN(ax, 20) * 0.4            // thicker when the top tips toward you
-    const n = EDGE.length
-    const edge = EDGE.map((c, i) => `${((lx * (i + 1)) / n).toFixed(2)}px ${((ly * (i + 1)) / n).toFixed(2)}px 0 ${c}`).join(', ')
-    const dx = lx * 2.6
-    return `${edge}, ${dx.toFixed(1)}px ${(46 + ly * 2.2).toFixed(1)}px 90px -20px rgba(12,12,16,.55), ${(dx / 3).toFixed(1)}px 22px 44px -14px rgba(12,12,16,.35), 0 2px 6px rgba(12,12,16,.12)`
+    const lx = clampN(-Math.sin(rad(ay)) * 30, 8)
+    const ly = clampN(Math.sin(rad(ax)) * 30, 8)
+    const rings = LAYERS.map(([b, a]) => {
+      const k = b / 90
+      return `${(lx * k).toFixed(2)}px ${(ly * k).toFixed(2)}px ${b}px ${Math.round(b / 6)}px rgba(14,14,18,${a})`
+    }).join(', ')
+    return `0 0 0 1px rgba(14,14,18,.08), ${rings}`
   })
 
   // Floor shadow under the card: slides opposite the tilt and narrows as the card turns

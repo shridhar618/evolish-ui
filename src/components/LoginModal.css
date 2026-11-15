@@ -152,7 +152,7 @@ form { text-align: left; }
 .modal-floor {
   position: absolute; left: 6%; right: 6%; bottom: -46px; height: 56px; z-index: -1; pointer-events: none;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(8, 8, 12, .7) 0%, rgba(20, 20, 26, .35) 45%, transparent 72%);
+  background: radial-gradient(ellipse at center, rgba(8, 8, 12, .32) 0%, rgba(20, 20, 26, .14) 45%, transparent 72%);
   filter: blur(16px);
 }
 
